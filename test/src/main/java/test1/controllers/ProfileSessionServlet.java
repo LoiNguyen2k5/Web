@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/logout")
-public class LogoutServlet extends HttpServlet {
+@WebServlet("/profileSession")
+public class ProfileSessionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -18,10 +18,13 @@ public class LogoutServlet extends HttpServlet {
         PrintWriter out = resp.getWriter();
 
         HttpSession session = req.getSession(false);
-        if (session != null) {
-            session.invalidate(); // Hủy session
+        if (session != null && session.getAttribute("name") != null) {
+            String name = (String) session.getAttribute("name");
+            out.println("Chào bạn, " + name + " đến với Profile (Session)<br/>");
+            out.println("<a href='logoutSession'>Logout</a>");
+        } else {
+            out.println("Bạn chưa đăng nhập!<br/>");
+            resp.sendRedirect("login-session.html");
         }
-        out.println("Bạn đã logout thành công!<br/>");
-        req.getRequestDispatcher("login.html").include(req, resp);
     }
 }
